@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option java_package="com.wb.msg";//定义生成的java包
+
+option java_outer_classname="Msg";//定义java类名
+//set new user,client will requist by opened game first
+
+message MsgBase {
+    string msgHead = 1;
+    string msgBody = 2;
+}
+
+message MsgHead {
+    int32 msgId = 1;
+    int32 gameId = 2;
+    int32 msgLen = 3;
+    int32 msgSign = 4;
+}
+
+message Msg_g2d_setUser {
+    string uuid = 1;
+    string name = 2;
+    int32 sex = 3;
+    string headUrl = 4;
+}
+
+message Msg_d2c_setUser {
+    string uuid = 1;
+    int32 errorCode = 2;
+}
+
+message Msg_g2d_setScore {
+    string uuid = 1;
+    int32 score = 2;
+}
+
+message Msg_d2g_setScore {
+    string uuid = 1;
+    int32 errorCode = 2;
+}
+
+message Msg_g2d_getScore {
+    repeated string uuid = 1;
+}
+
+message Msg_d2g_scoreCell {
+    string uuid = 1;
+    string name = 2;
+    int32 sex = 3;
+    string headUrl = 4;
+    int32 score = 5;
+}
+
+message Msg_d2g_getScore {
+    repeated Msg_d2g_scoreCell scoreData = 1;
+    int32 errorCode = 2;
+}
