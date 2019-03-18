@@ -1,0 +1,43 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-MyHttpServer<HttpServer>",
+            "request": "launch",
+            "mainClass": "com.wb.server.MyHttpServer",
+            "projectName": "HttpServer"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-DocsConnectionPropsHelper<Http_BD>",
+            "request": "launch",
+            "mainClass": "com.mysql.cj.jdbc.DocsConnectionPropsHelper",
+            "projectName": "Http_BD"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-TimezoneDump<Http_BD>",
+            "request": "launch",
+            "mainClass": "com.mysql.cj.jdbc.admin.TimezoneDump",
+            "projectName": "Http_BD"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-MyserverDB<Http_BD>",
+            "request": "launch",
+            "mainClass": "com.wb.db.MyserverDB",
+            "projectName": "Http_BD"
+        }
+    ]
+}
