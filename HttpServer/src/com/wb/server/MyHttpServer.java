@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.wb.socket.SocketClient;
  
 public class MyHttpServer {
 	
@@ -46,31 +48,48 @@ public class MyHttpServer {
 		
 	}
 	public static void main(String[] args) {   //服务器主函数，
-		File  docRoot ;
-		
-		try{
-			docRoot = new File(args[0]);  //解析参数，确定服务器根目录
-			if(!docRoot.isDirectory()){
-				System.out.println("Error , docRoot is not a directory");
-				return ;
-			}
-		}catch(ArrayIndexOutOfBoundsException ex){
-			System.out.println("Please input docRoot name");
-			return;
-		}
-		int port ;
-		try{
-			port = Integer.parseInt(args[1]); //解析参数 ，获取端口号
+
+		SocketClient client = SocketClient.getInstance();
+		client.connect("172.0.0.1", 8001);
+		while(true)
+		{	
+			long startTime=System.nanoTime();   //获取开始时间
 			
-		}catch(RuntimeException e){
-			port = 80 ;
+			try{					
+				Thread.sleep(100);
+			}catch(Exception ex){
+				System.out.println(" Error accepting connect"+ ex);
+			}
+			long endTime=System.nanoTime(); //获取结束时间
+			System.out.println(endTime - startTime);
+			client.update(0.1f);
 		}
-		try{
-			MyHttpServer httpServer = new MyHttpServer(docRoot, port);
-			httpServer.start();
-		}catch(IOException e){
-			System.out.println("Can not start Server"+ e);
-		}
+
+		// File  docRoot ;
+		
+		// try{
+		// 	docRoot = new File(args[0]);  //解析参数，确定服务器根目录
+		// 	if(!docRoot.isDirectory()){
+		// 		System.out.println("Error , docRoot is not a directory");
+		// 		return ;
+		// 	}
+		// }catch(ArrayIndexOutOfBoundsException ex){
+		// 	System.out.println("Please input docRoot name");
+		// 	return;
+		// }
+		// int port ;
+		// try{
+		// 	port = Integer.parseInt(args[1]); //解析参数 ，获取端口号
+			
+		// }catch(RuntimeException e){
+		// 	port = 80 ;
+		// }
+		// try{
+		// 	MyHttpServer httpServer = new MyHttpServer(docRoot, port);
+		// 	httpServer.start();
+		// }catch(IOException e){
+		// 	System.out.println("Can not start Server"+ e);
+		// }
 	}
 	
 }
