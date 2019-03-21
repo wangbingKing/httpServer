@@ -38,7 +38,18 @@ public class SocketRunnable implements Runnable{
 			try {
 				//从客户端程序接收数据
 				InputStream is = socket.getInputStream();
-				MsgBase msg = MsgBase.parseDelimitedFrom(is);
+
+				byte len[] = new byte[1024];
+				int count = is.read(len);  
+			
+				byte[] temp = new byte[count];
+				for (int i = 0; i < count; i++) {   
+					temp[i] = len[i];                              
+				}
+				System.out.println(temp.toString());
+				MsgBase msg = MsgBase.parseFrom(is);
+				// MsgBase msg = MsgBase.parseDelimitedFrom(is);
+				is.close();
 				MsgHead head = MsgHead.parseFrom(msg.getMsgHeadBytes());
 				
 				System.out.println("从客户端程序接收数据:"+head.getMsgId());

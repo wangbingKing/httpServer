@@ -10,13 +10,11 @@ public class SocketManager {
 	Map<InetAddress,SocketMsg> socket_map = null;
 	List<SocketMsg> readList = null;
 	List<SocketMsg> writeList = null;
-	SocketManager socketManager = null;
 	public SocketManager()
 	{
 		socket_map = new HashMap<InetAddress, SocketMsg>();
 		readList = new ArrayList<SocketMsg>();
 		writeList = new ArrayList<SocketMsg>();
-		socketManager = new SocketManager();
 	}
 	public void push(SocketMsg socket)
 	{
@@ -44,14 +42,4 @@ public class SocketManager {
 		}
 
 	}
-	
-	public void pushSocket()
-	{
-		for(int i = 0; i < this.readList.size(); i++)
-		{
-			socketManager.push(this.readList.get(i));
-		}
-		readList.clear();
-	}
-	
 }

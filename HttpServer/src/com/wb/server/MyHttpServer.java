@@ -14,30 +14,19 @@ public class MyHttpServer {
 	
 		
 	private static final int NUM_THREADS = 50 ; //线程池线程数量
-	private static final  String INDEX_FILE = "index.html" ;  //服务器首页索引文件名
- 
-	
-	private final File  rootDirectory ;  //服务器根目录，服务器资源都放在该目录下
-	private int port = 8088 ;  //服务器端口号   默认设置为80
-		
-	
-	public MyHttpServer(File rootDirectory , int port) throws IOException{
-		
-		if(!rootDirectory.isDirectory()){
-			throw new IOException(rootDirectory + "is not a directory");
-		}
-		this.rootDirectory = rootDirectory ;
+	private int port = 8888 ;  //服务器端口号   默认设置为80
+	public MyHttpServer(int port) throws Exception{
 		this.port = port ;
-		
 	}
 	
 	public void start() throws IOException{  //启动服务器
 		ExecutorService  pool = Executors.newFixedThreadPool(NUM_THREADS); //服务器工作线程池
 		try(ServerSocket server = new ServerSocket(port)){
+			System.out.println(" create server success");
 			while(true){
 				try{					
 					Socket request = server.accept();  //接受请求，后提交线程池处理
-					Runnable r = new ProcessorRequest(rootDirectory,INDEX_FILE,request);
+					Runnable r = new ProcessorRequest(request);
 					pool.submit(r);
 				}catch(IOException ex){
 					System.out.println(" Error accepting connect"+ ex);
@@ -48,48 +37,35 @@ public class MyHttpServer {
 		
 	}
 	public static void main(String[] args) {   //服务器主函数，
-
-		SocketClient client = SocketClient.getInstance();
-		client.connect("172.0.0.1", 8001);
-		while(true)
-		{	
-			long startTime=System.nanoTime();   //获取开始时间
-			
-			try{					
-				Thread.sleep(100);
-			}catch(Exception ex){
-				System.out.println(" Error accepting connect"+ ex);
-			}
-			long endTime=System.nanoTime(); //获取结束时间
-			System.out.println(endTime - startTime);
-			client.update(0.1f);
-		}
-
-		// File  docRoot ;
 		
 		// try{
-		// 	docRoot = new File(args[0]);  //解析参数，确定服务器根目录
-		// 	if(!docRoot.isDirectory()){
-		// 		System.out.println("Error , docRoot is not a directory");
-		// 		return ;
-		// 	}
-		// }catch(ArrayIndexOutOfBoundsException ex){
-		// 	System.out.println("Please input docRoot name");
-		// 	return;
-		// }
-		// int port ;
-		// try{
-		// 	port = Integer.parseInt(args[1]); //解析参数 ，获取端口号
-			
-		// }catch(RuntimeException e){
-		// 	port = 80 ;
-		// }
-		// try{
-		// 	MyHttpServer httpServer = new MyHttpServer(docRoot, port);
+		// 	MyHttpServer httpServer = new MyHttpServer(8888);
 		// 	httpServer.start();
-		// }catch(IOException e){
+		// }catch(Exception e){
 		// 	System.out.println("Can not start Server"+ e);
 		// }
+
+		System.out.println(" client start connect");
+		try{					
+			SocketClient client = SocketClient.getInstance();
+			client.connect("127.0.0.1", 8889);
+			System.out.println(" client connect");
+			while(true)
+			{	
+				long startTime=System.nanoTime();   //获取开始时间
+				
+				try{					
+					Thread.sleep(100);
+				}catch(Exception ex){
+					System.out.println(" Error accepting connect"+ ex);
+				}
+				long endTime=System.nanoTime(); //获取结束时间
+				// System.out.println(endTime - startTime);
+				client.update(0.1f);
+			}
+		}catch(Exception ex){
+			System.out.println(" Error accepting connect"+ ex);
+		}
 	}
 	
 }

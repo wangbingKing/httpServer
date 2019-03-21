@@ -40,6 +40,7 @@ public class ServerHandler {
 			msgBuilder.setMsgBody(body);
 			MsgBase msgData = msgBuilder.build();
 			msgData.writeTo(msg.getMsgSocket().getOutputStream());
+			msg.getMsgSocket().shutdownOutput();
 		}
 		catch(Exception e) {
 			e.printStackTrace();

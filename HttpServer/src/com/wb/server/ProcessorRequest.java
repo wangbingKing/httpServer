@@ -35,6 +35,12 @@ public class ProcessorRequest  implements Runnable {
 		}
 		this.connection = s ;
 	}
+
+	public ProcessorRequest(Socket s)
+	{
+		this.connection = s;
+	}
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub	
@@ -54,16 +60,16 @@ public class ProcessorRequest  implements Runnable {
 			String [] tokens = reqLine.split("\\s+");
 			String method = tokens[0];
 			
-			if(method.equalsIgnoreCase("GET")){ //GET请求处理
+			// if(method.equalsIgnoreCase("GET")){ //GET请求处理
 						
-				doGet(in , rawOut , reqLine);
+			// 	doGet(in , rawOut , reqLine);
 				
 				
-			}else if(method.equalsIgnoreCase("POST")){ //POST请求处理
+			// }else if(method.equalsIgnoreCase("POST")){ //POST请求处理
 				
-				doPost(in , rawOut , reqLine);
+			// 	doPost(in , rawOut , reqLine);
 				
-			}else{                           //其他请求，暂不处理，返回 <span style="font-family: Arial, Helvetica, sans-serif;">501</span>
+			// }else{                           //其他请求，暂不处理，返回 <span style="font-family: Arial, Helvetica, sans-serif;">501</span>
  
 				String fileName = tokens[1];				
 				String version = null ;
@@ -77,7 +83,7 @@ public class ProcessorRequest  implements Runnable {
 				}
 				out.write(body);
 				out.flush();
-			}
+			// }
 			
 		}catch(Exception ex){
 			System.out.println("Error of "+connection.getRemoteSocketAddress()+ex);

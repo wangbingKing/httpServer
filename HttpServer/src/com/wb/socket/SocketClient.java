@@ -84,7 +84,21 @@ public class SocketClient implements Runnable {
         for(int i = 0;i < sendList.size();i++)
         {
             try{
-                sendList.get(i).writeTo(socket.getOutputStream());
+                MsgBase msg = sendList.get(i);
+                OutputStream outPut = socket.getOutputStream();
+                System.out.println(msg.toString());
+                
+                byte[] temp = msg.toByteArray();
+                MsgBase msgBase = MsgBase.parseFrom(temp);// (msg.toString());
+                // MsgBase msg = MsgBase.parseDelimitedFrom(is);
+                String headStr = msgBase.getMsgHead();
+                System.out.println(headStr);
+                byte[] headTemp = headStr.getBytes();
+				MsgHead head = MsgHead.parseFrom(msg.getMsgHead().getBytes());
+				
+				System.out.println("从客户端程序接收数据:"+head.getMsgId());
+
+                msg.writeTo(outPut);
             }
             catch(Exception e) {
                 e.printStackTrace();
