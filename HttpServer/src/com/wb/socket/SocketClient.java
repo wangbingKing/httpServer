@@ -1,12 +1,16 @@
 package com.wb.socket;
 
+import com.wb.msg.Msg.MsgHead.Builder;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.protobuf.TextFormat;
 import com.wb.msg.Msg.MsgBase;
 import com.wb.msg.Msg.MsgHead;
 
@@ -54,22 +58,30 @@ public class SocketClient implements Runnable {
     public boolean sendMessage(int msgId, String body)
     {
         try{
+
             MsgHead.Builder h = MsgHead.newBuilder();
             h.setMsgId(msgId);
             h.setGameId(10001);
             h.setMsgLen(2222);
-            h.setMsgSign(11111111);
+            h.setMsgSign(11111111);          
             MsgHead head = h.build();
             MsgBase.Builder msgBuilder = MsgBase.newBuilder();
             msgBuilder.setMsgHead(head.toString());
-            msgBuilder.setMsgBody(body);
+
+
+            MsgHead.Builder badyBuilder = MsgHead.newBuilder();
+            badyBuilder.setMsgId(msgId);
+            badyBuilder.setGameId(10001);
+            badyBuilder.setMsgLen(2222);
+            badyBuilder.setMsgSign(11111111);          
+            MsgHead badyHead = badyBuilder.build();
+            msgBuilder.setMsgBody(badyHead.toString());
             sendList.add(msgBuilder.build());
         }
         catch(Exception e) {
             e.printStackTrace();
             return false;
         }
-       
         return true;
     }
 
@@ -88,17 +100,23 @@ public class SocketClient implements Runnable {
                 OutputStream outPut = socket.getOutputStream();
                 System.out.println(msg.toString());
                 
-                byte[] temp = msg.toByteArray();
-                MsgBase msgBase = MsgBase.parseFrom(temp);// (msg.toString());
-                // MsgBase msg = MsgBase.parseDelimitedFrom(is);
-                String headStr = msgBase.getMsgHead();
-                System.out.println(headStr);
-                byte[] headTemp = headStr.getBytes();
-				MsgHead head = MsgHead.parseFrom(msg.getMsgHead().getBytes());
-				
-				System.out.println("从客户端程序接收数据:"+head.getMsgId());
+                // byte[] temp = msg.toByteArray();
+                // MsgBase msgBase = MsgBase.parseFrom(temp);// (msg.toString());
+                // // MsgBase msg = MsgBase.parseDelimitedFrom(is);
+                // String headStr = msgBase.getMsgHead();
+                // System.out.println(headStr);
 
+                // String bodyStr = msgBase.getMsgBody();
+                // System.out.println(bodyStr);
+
+
+                // InputStream isHeadStrem = new ByteArrayInputStream(headStr.getBytes());
+                // InputStreamReader reader = new InputStreamReader(isHeadStrem, "ASCII");
+                // MsgHead.Builder headBuild = MsgHead.newBuilder();
+                // TextFormat.merge(reader, headBuild);
+                // MsgHead head = headBuild.build();
                 msg.writeTo(outPut);
+                socket.shutdownOutput();
             }
             catch(Exception e) {
                 e.printStackTrace();

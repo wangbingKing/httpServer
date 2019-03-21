@@ -6,26 +6,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Debug (Launch) - Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-DocsConnectionPropsHelper<Http_BD>",
-            "request": "launch",
-            "mainClass": "com.mysql.cj.jdbc.DocsConnectionPropsHelper",
-            "projectName": "Http_BD"
-        },
-        {
-            "type": "java",
-            "name": "Debug (Launch)-TimezoneDump<Http_BD>",
-            "request": "launch",
-            "mainClass": "com.mysql.cj.jdbc.admin.TimezoneDump",
-            "projectName": "Http_BD"
-        },
-        {
-            "type": "java",
             "name": "Debug (Launch)-MyserverDB<Http_BD>",
             "request": "launch",
             "mainClass": "com.wb.db.MyserverDB",
