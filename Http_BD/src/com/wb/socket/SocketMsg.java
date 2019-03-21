@@ -12,7 +12,7 @@ public class SocketMsg {
 	public static int Msg_g2d_getScore = 5;
 	public static int Msg_d2g_getScore = 6;
 	public static int Msg_g2d_heartbeat = 99;
-	public static int Msg_d2g_heartbeat = 99;
+	public static int Msg_d2g_heartbeat = 100;
 	
 	private int msgId = 0;
 	private Socket socket = null;

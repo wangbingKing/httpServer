@@ -49,6 +49,7 @@ public class SocketClient implements Runnable {
             socket = new Socket(m_ip,m_port);
             sendMessage(SocketMsg.Msg_d2g_heartbeat, "");
             headBeatTime = HEADBEAT_TIME;
+            new Thread(this).start();
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -67,8 +68,6 @@ public class SocketClient implements Runnable {
             MsgHead head = h.build();
             MsgBase.Builder msgBuilder = MsgBase.newBuilder();
             msgBuilder.setMsgHead(head.toString());
-
-
             MsgHead.Builder badyBuilder = MsgHead.newBuilder();
             badyBuilder.setMsgId(msgId);
             badyBuilder.setGameId(10001);
@@ -77,6 +76,7 @@ public class SocketClient implements Runnable {
             MsgHead badyHead = badyBuilder.build();
             msgBuilder.setMsgBody(badyHead.toString());
             sendList.add(msgBuilder.build());
+            System.out.println("send msg msgId success");
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -98,25 +98,7 @@ public class SocketClient implements Runnable {
             try{
                 MsgBase msg = sendList.get(i);
                 OutputStream outPut = socket.getOutputStream();
-                System.out.println(msg.toString());
-                
-                // byte[] temp = msg.toByteArray();
-                // MsgBase msgBase = MsgBase.parseFrom(temp);// (msg.toString());
-                // // MsgBase msg = MsgBase.parseDelimitedFrom(is);
-                // String headStr = msgBase.getMsgHead();
-                // System.out.println(headStr);
-
-                // String bodyStr = msgBase.getMsgBody();
-                // System.out.println(bodyStr);
-
-
-                // InputStream isHeadStrem = new ByteArrayInputStream(headStr.getBytes());
-                // InputStreamReader reader = new InputStreamReader(isHeadStrem, "ASCII");
-                // MsgHead.Builder headBuild = MsgHead.newBuilder();
-                // TextFormat.merge(reader, headBuild);
-                // MsgHead head = headBuild.build();
                 msg.writeTo(outPut);
-                socket.shutdownOutput();
             }
             catch(Exception e) {
                 e.printStackTrace();
@@ -154,19 +136,37 @@ public class SocketClient implements Runnable {
 
     @Override
     public void run() {
-        try{
-            InputStream is = socket.getInputStream();
-            MsgBase msg = MsgBase.parseDelimitedFrom(is);
-            MsgHead head = MsgHead.parseFrom(msg.getMsgHeadBytes());
+        while(true)
+        {
+            try{
+                //从客户端程序接收数据
+                InputStream is = socket.getInputStream();
+    
+                byte len[] = new byte[1024];
+                int count = is.read(len);  
             
-            System.out.println("从客户端程序接收数据:"+head.getMsgId());
-            //这里做一下消息的检验
-            SocketMsg sockMsg = new SocketMsg(head.getMsgId(),socket,msg.getMsgBody());
-            push(sockMsg);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
+                byte[] temp = new byte[count];
+                for (int i = 0; i < count; i++) {   
+                    temp[i] = len[i];                              
+                }
+                MsgBase msgBase = MsgBase.parseFrom(temp);
+                String headStr = msgBase.getMsgHead();
+                String bodyStr = msgBase.getMsgBody();
+                InputStream isHeadStrem = new ByteArrayInputStream(headStr.getBytes());
+                InputStreamReader readerHead = new InputStreamReader(isHeadStrem, "ASCII");
+                MsgHead.Builder headBuild = MsgHead.newBuilder();
+                TextFormat.merge(readerHead, headBuild);
+                MsgHead head = headBuild.build();
+                
+                
+                System.out.println("get server msg:"+head.getMsgId());
+                //这里做一下消息的检验
+                SocketMsg sockMsg = new SocketMsg(head.getMsgId(),socket,bodyStr);
+                push(sockMsg);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-
 }

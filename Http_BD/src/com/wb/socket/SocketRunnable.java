@@ -53,27 +53,16 @@ public class SocketRunnable implements Runnable{
                 for (int i = 0; i < count; i++) {   
                     temp[i] = len[i];                              
                 }
-                System.out.println(temp.toString());
-
-				MsgBase msgBase = MsgBase.parseFrom(temp);
-
-				System.out.println(msgBase.toString());
-                
+				MsgBase msgBase = MsgBase.parseFrom(temp);              
                 String headStr = msgBase.getMsgHead();
-                System.out.println(headStr);
-
                 String bodyStr = msgBase.getMsgBody();
-                System.out.println(bodyStr);
-
-
                 InputStream isHeadStrem = new ByteArrayInputStream(headStr.getBytes());
                 InputStreamReader readerHead = new InputStreamReader(isHeadStrem, "ASCII");
                 MsgHead.Builder headBuild = MsgHead.newBuilder();
                 TextFormat.merge(readerHead, headBuild);
                 MsgHead head = headBuild.build();
                 
-				
-				System.out.println("从客户端程序接收数据:"+head.getMsgId());
+				System.out.println("get client msg is :"+head.getMsgId());
 				//这里做一下消息的检验
 				SocketMsg sockMsg = new SocketMsg(head.getMsgId(),socket,bodyStr);
 				synServer.pushSocket(sockMsg);

@@ -1,4 +1,10 @@
 package com.wb.socket;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+
+import com.google.protobuf.TextFormat;
 import com.wb.msg.Msg.MsgBase;
 import com.wb.msg.Msg.MsgHead;
 
@@ -19,7 +25,19 @@ public class ServerHandler {
 		}
 		else if(msg.getMsgId() == SocketMsg.Msg_g2d_heartbeat)
 		{
-			sendMessage(SocketMsg.Msg_d2g_heartbeat, "", msg);
+			try {
+				String bodyStr = msg.getBody();
+				InputStream isBodyStrem = new ByteArrayInputStream(bodyStr.getBytes());
+				InputStreamReader readerBody = new InputStreamReader(isBodyStrem, "ASCII");
+				MsgHead.Builder headBuild = MsgHead.newBuilder();
+				TextFormat.merge(readerBody, headBuild);
+				MsgHead head = headBuild.build();
+				sendMessage(SocketMsg.Msg_d2g_heartbeat, "", msg);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		else if(msg.getMsgId() == SocketMsg.Msg_d2g_setScore)
 		{
@@ -40,7 +58,7 @@ public class ServerHandler {
 			msgBuilder.setMsgBody(body);
 			MsgBase msgData = msgBuilder.build();
 			msgData.writeTo(msg.getMsgSocket().getOutputStream());
-			msg.getMsgSocket().shutdownOutput();
+			// msg.getMsgSocket().shutdownOutput();
 		}
 		catch(Exception e) {
 			e.printStackTrace();
